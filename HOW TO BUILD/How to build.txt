@@ -1,0 +1,38 @@
+
+Instructions to build the PS2 version :
+
+You must already  have a working ps2sdk building environment prior to build this PS2 port of lsdldoom. You also need the SDL and SDL_mixer port to the PS2.
+
+My modifications include a patch to gsKit so we can get a non-interlaced screen which is not available when I'm typing this. Since SDL depends on gsKit, we going also to make a minor change to it also to impose a 0.625 aspect ratio like seen on a PC version of Doom. Note that these changes are optional.
+
+
+gsKit and SDL changes :
+-----------------------
+Apply patches or copy the supplied modified sources.
+
+
+PS2lsdldoom :
+-------------
+
+	Embedded version (containing the sharewad WAD) :
+	------------------------------------------------
+
+	You need to have the ROMFS package. Get it from svn://svn.ps2dev.org/ps2/trunk/ps2sdk-ports/romfs. Add the line "include Makefile.romfs" at the end of the Makefile, uncomment the "#include <romfs_io.h>" and "rioInit();" at l_main.c.
+
+	Create a folder called romdisk and place there the doom1.wad (use lower case for the filename!) along with the boomlump.wad (look at the data folder for this wad). Optionally, create a dummy file named strafeonrightjoy.dat if you want to strafe with the right analog joystick - clumsy hack). Build the image with "make -f Makefile.romfs romdisk.img" followed by a "make -f Makefile.romfs romdisk.o". Finally do a "make" and the DOOM.ELF should buid.
+
+	You supply the wad version :
+	----------------------------
+
+	Remove the line "include Makefile.romfs" at the end of the Makefile, comment the "#include <romfs_io.h>" and "rioInit();" at l_main.c. Type make. You should now have your DOOM.ELF. Please note this flavour is more prone to crash than the embedded version.
+
+
+
+
+Any question, drop a comment on :
+http://ps2homebrewing.wordpress.com
+
+or email me : pedroduarte0@yahoo.com
+
+------
+ptek

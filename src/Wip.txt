@@ -1,0 +1,180 @@
+P_NextWeapon (p_pspr.c) chamado em g_game.c
+
+se prx arma nao tiver disponivel, passar a outra
+
+		// ptek : key_weapon1 faz cycle de armas
+			player_t *plr;
+			plr = &players[consoleplayer];
+
+            //const player_t *player = &players[consoleplayer];
+			//int readyweapon = (int)player->readyweapon;
+            			int readyweapon = (int)plr->readyweapon;
+
+
+			int nw = readyweapon+1;
+			if (nw == NUMWEAPONS)
+				nw = wp_fist;
+
+			// check if player has the next weapon
+			while (!plr->weaponowned[nw])
+			{
+				nw++;
+				if (nw == NUMWEAPONS)
+					nw = wp_fist;
+			}
+			newweapon = nw;
+
+
+
+
+
+I_TranslateButton (l_video_sdl.c)
+
+adicionada tecla y
+
+
+tratam das teclas bind :
+------------------------
+m_menu.c  if (setup_active)
+
+
+menu:
+-----
+
+ver m_menu.c
+
+// SetupMenu is the definition of what the main Setup Screen should look
+// like. Each entry shows that the cursor can land on each item (1), the
+// built-in graphic lump (i.e. "M_KEYBND") that should be displayed,
+// the program which takes over when an item is selected, and the hotkey
+// associated with the item.
+
+
+adicionar menu item :
+---------------------
+m_misc.c colocar entrada em defaults[]
+m_menu.c colocar entrada em keys_settings3[] (exemplo)
+m_menu.c colocar entrada em helpstrings[] (exemplo)
+g_game.c + game.h adicionar tecla em // controls (have defaults)
+
+-------------------------------------------------------------------------
+(m_swap.h) : #define LONG(x) doom_wtohl(x) :
+
+	LONG(x)  = doom_wtohl(x)
+
+	atenção a #if ( SDL_BYTEORDER == SDL_BIG_ENDIAN )
+		#define doom_wtohl(x) doom_swap_l(x) ou #define doom_wtohl(x) (long int)(x)
+
+
+gamespeed :
+-----------
+
+m_misc.c
+default_t defaults[] = ... {"realtic_clock_rate",{&realtic_clock_rate},{100},0,UL,
+
+crash :
+---------
+R_GenerateLookup: Column 63 is without a patch in texture STARGR1R_GenerateLookup failed
+ I_EndJoystick : closing joystick
+
+column           : 33540096
+column->topdelta : 21625731
+
+column           : 33540096
+column->topdelta : 21625753
+
+column           : 33540096
+column->topdelta : 21625802
+
+column           : 33540096
+column->topdelta : 21625816
+
+
+
+           EE Exception handler: TLB load/inst fetch exception
+
+      Cause 20008008  BadVAddr 08e5961a  Status 70030c13  EPC 00119e54
+
+zero: 00000000000000000000000000000000   t8: 0000000000000000FFFFFFFF80020FC0
+  at: 0000000000000000FFFFFFFF80020000   t9: 00000000000000000000000000019600
+  a2: 808080808080808000000000000C2C8F   s4: 000000000000000000000000001F0000
+  t1: 00000000000000000000000008E5961A   s7: 000000000000000000000000001F0000
+  t5: 0000000000000000000000005DA40000   sp: 00000000000000000000000001FFC800
+  t6: 00000000000000000000000000028B6A   fp: 000000000000000000000000001C0000
+  t7: 00000000000000000000000000000011   ra: 0000000000000000000000000011A108
+
+column           : 33546480
+column           : 33546480
+column           : 33546480
+column           : 33546480
+column           : 33546480
+column           : 33546480
+column           : 33546480
+
+
+           EE Exception handler: TLB load/inst fetch exception
+
+      Cause 20008008  BadVAddr 128af0d6  Status 70030c13  EPC 0013bbf0
+
+zero: 00000000000000000000000000000000   t8: 0000000000000000FFFFFFFF80020FC0
+  at: 0000000000000000FFFFFFFF80020000   t9: 00000000000000000000000000019600
+  v0: 00000000000000000000000000000040   s0: 00000000000000000000000000000233
+  v1: 808080808080808000000000113D0AA6   s1: 00000000000000000000000000000025
+  a0: 808080800000000000000000014DE5B8   s2: 000000000000000000000000014DD330
+  a1: 000000000000000000000000128AF0D6   s3: 0000000000000000000000000028BD50
+  a2: 0000000000800000000000000027B5F8   s4: 0000000000000000000000000000004D
+  a3: FFADBAAAB6ADBBB10000000000000001   s5: 0000000000000000000000000028BD00
+  t0: 00000000000000000000000000000020   s6: 00000000000000000000000000238910
+  t1: 010101010101010100000000014DD7E0   s7: 000000000000000000000000014DD100
+  t2: 010101010101010100000000014DE638   k0: 00000000000000000000000000000000
+  t3: 000000000000000000000000014DD140   k1: FFFDFFFFFBFFFDFF0000000000000000
+  t4: 00000000000000000000000000000100   gp: 000000000000000000000000001FF870
+  t5: 000000000000000000000000014DE630   sp: 00000000000000000000000001FFDB70
+  t6: 000000000000000000000000000000FF   fp: 000000000000000000000000014DD760
+  t7: 0000000000000000000000000000001F   ra: 0000000000000000000000000013BB8C
+
+column           : 33540112
+column           : 33540112
+column           : 33540112
+column           : 33540112
+column           : 33540112
+
+
+           EE Exception handler: Address load/inst fetch exception
+
+      Cause 20008010  BadVAddr fff24597  Status 70030c13  EPC 00119e50
+
+column           : 01FFC810
+column           : 01FFC810
+column           : 01FFC810
+
+
+           EE Exception handler: Address load/inst fetch exception
+
+      Cause 20008010  BadVAddr fcd931ac  Status 70030c13  EPC 00119e50
+
+
+column           : 33540112
+column           : 33546480
+
+
+column->topdelta : 0x0145CCFC
+
+column           : 0x0145CCFC
+column->topdelta : 0x0145CD10
+
+column->topdelta : 0x0145CCD9
+
+column           : 0x0145CD38
+
+
+           EE Exception handler: Address load/inst fetch exception
+
+      Cause 30008010  BadVAddr ff0ba777  Status 70030c13  EPC 00119e40
+
+column           : 0x014A1061
+
+
+           EE Exception handler: Address load/inst fetch exception
+
+      Cause 30008010  BadVAddr fb5e23aa  Status 70030c13  EPC 00119e40

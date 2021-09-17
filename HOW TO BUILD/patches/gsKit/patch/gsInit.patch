@@ -1,0 +1,59 @@
+Index: J:/cygwin/usr/local/ps2dev/gsKit/ee/gs/src/gsInit.c
+===================================================================
+--- J:/cygwin/usr/local/ps2dev/gsKit/ee/gs/src/gsInit.c	(revision 1433)
++++ J:/cygwin/usr/local/ps2dev/gsKit/ee/gs/src/gsInit.c	(working copy)
+@@ -282,15 +282,18 @@
+ 
+ 	if(mode == GS_MODE_NTSC)
+ 	{
+-		gsGlobal->Interlace = GS_INTERLACED;
++		//gsGlobal->Interlace = GS_INTERLACED;
++        gsGlobal->Interlace = GS_NONINTERLACED;
+ 		gsGlobal->Field = GS_FIELD;
+ 		gsGlobal->DoubleBuffering = GS_SETTING_ON;
+ 		gsGlobal->ZBuffering = GS_SETTING_ON;
+ 		gsGlobal->Mode = mode;
+ 		gsGlobal->Width = 640;	
+-		gsGlobal->Height = 448;
++		//gsGlobal->Height = 448;
++        gsGlobal->Height = 448/2;
+ 		gsGlobal->StartX = 652;
+-		gsGlobal->StartY = 50;
++		//gsGlobal->StartY = 50;
++		gsGlobal->StartY = 27;
+ 		gsGlobal->MagX = 3;
+ 		gsGlobal->MagY = 0;
+ 	}
+@@ -311,27 +314,29 @@
+ 	}
+ 	else if(mode == GS_MODE_PAL)
+ 	{
+-		gsGlobal->Interlace = GS_INTERLACED;
++		gsGlobal->Interlace = GS_NONINTERLACED;
+ 		gsGlobal->Field = GS_FIELD;
+ 		gsGlobal->DoubleBuffering = GS_SETTING_ON;
+ 		gsGlobal->ZBuffering = GS_SETTING_ON;
+ 		gsGlobal->Mode = mode;
+ 		gsGlobal->Width = 640;
+-		gsGlobal->Height = 512;
++		gsGlobal->Height = 256;
+ 		gsGlobal->StartX = 680;
+-		gsGlobal->StartY = 72;
++		gsGlobal->StartY = 38;
+ 		gsGlobal->MagX = 3;
+ 		gsGlobal->MagY = 0;
+ 	}
+ 	else if(mode == GS_MODE_PAL_I)
+ 	{
+ 		gsGlobal->Interlace = GS_INTERLACED;
++//gsGlobal->Interlace = GS_NONINTERLACED;
+ 		gsGlobal->Field = GS_FRAME;
+ 		gsGlobal->DoubleBuffering = GS_SETTING_ON;
+ 		gsGlobal->ZBuffering = GS_SETTING_ON;
+ 		gsGlobal->Mode = mode;
+ 		gsGlobal->Width = 640;		
+ 		gsGlobal->Height = 512; // really 256 per frame
++//gsGlobal->Height = 256;
+ 		gsGlobal->StartX = 680;
+ 		gsGlobal->StartY = 72;
+ 		gsGlobal->MagX = 3;

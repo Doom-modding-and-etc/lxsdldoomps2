@@ -1,0 +1,155 @@
+Index: J:/cygwin/usr/local/ps2dev/ps2sdk-ports/sdl/src/video/ps2sdk/SDL_ps2video.c
+===================================================================
+--- J:/cygwin/usr/local/ps2dev/ps2sdk-ports/sdl/src/video/ps2sdk/SDL_ps2video.c	(revision 1429)
++++ J:/cygwin/usr/local/ps2dev/ps2sdk-ports/sdl/src/video/ps2sdk/SDL_ps2video.c	(working copy)
+@@ -401,12 +401,17 @@
+ 
+ 	/* full screen, with aspect ratio */
+ 	visible_h = gsGlobal->Height;
+-	visible_w = gsGlobal->Width;
++	//visible_w = gsGlobal->Width;
++visible_w = gsGlobal->Width / 2;		// If using a gskit non-interlaced screen, halve the screen height
+ 	if (force_ratio == 0.0f)
+ 	{
+ 		w_ratio = visible_w / (float)width;
++//w_ratio = visible_w/2 / (float)width;
++printf("***** w_ratio = %f\n", w_ratio);
+ 		h_ratio = visible_h / (float)height;
++printf("***** h_ratio = %f\n", h_ratio);
+ 		ratio = (w_ratio <= h_ratio) ? w_ratio : h_ratio;
++printf("***** ratio = %f\n", ratio);
+ 	}
+ 	else
+ 	{
+@@ -418,9 +423,13 @@
+ 	device->hidden->center_x = (visible_w - (width * ratio)) / 2;
+ 	device->hidden->center_y = (visible_h - (height * ratio)) / 2;
+ 
++printf("***** device->hidden->center_x = %d\n", device->hidden->center_x);
++printf("***** device->hidden->center_y = %d\n", device->hidden->center_y);
++
+ 	printf("SDL_video: centered surface of (%d, %d) onto a screen of (%d, %d) at (%d, %d)\n",
+ 		current->w, current->h,
+-		gsGlobal->Width, gsGlobal->Height,
++//		gsGlobal->Width, gsGlobal->Height,
++gsGlobal->Width/2, gsGlobal->Height,
+ 		device->hidden->center_x, device->hidden->center_y);
+ 
+ 	printf("SDL_video: ratio of 1:%.3f, rastered surface is (%d, %d)\n",
+@@ -430,9 +439,9 @@
+ 	clear_screens();
+ 
+ #ifdef SDL_USE_HW_SURFACE
+-	
++
+ 	printf ("SDL: HW Surface Flipping !\n");
+-	
++
+ 	gsKit_texture_upload(gsGlobal, &gsTexture);
+ 	/*
+ 	printf ("tex coords\n");
+@@ -442,14 +451,16 @@
+ 	printf ("u2,v2 : %d, %d\n", gsTexture.Width , gsTexture.Height);
+ 	*/
+ 
+-	gsKit_prim_sprite_striped_texture(gsGlobal, &gsTexture, device->hidden->center_x, device->hidden->center_y, // x1,y1
++	//gsKit_prim_sprite_striped_texture(gsGlobal, &gsTexture, device->hidden->center_x, device->hidden->center_y, // x1,y1
++	gsKit_prim_sprite_striped_texture(gsGlobal, &gsTexture, device->hidden->center_x, 0, // don't center it
+ 								0, 0, // u1,v1
+-						    		(int)((current->w * ratio) + device->hidden->center_x), (int)((current->h * ratio) + device->hidden->center_y), //x2,y2
++//						    		(int)((current->w * ratio) + device->hidden->center_x), (int)((current->h * ratio) + device->hidden->center_y), //x2,y2
++(int)(2*((current->w * ratio) + device->hidden->center_x)), (int)((current->h * h_ratio) + 0*device->hidden->center_y), //x2,y2
+ 						    		gsTexture.Width , gsTexture.Height,
+ 						    		1.0, TEXTURE_RGBAQ);
+-							 
+-#endif		
+ 
++#endif
++
+ 	SDL_SetCursor(0);
+ 	return current;
+ }
+@@ -489,7 +500,7 @@
+ {
+ #ifdef PS2SDL_USE_INPUT_DEVICES
+ 	PS2_PumpKeyboardEvents(device);
+-	PS2_PumpMouseEvents(device);       
++	PS2_PumpMouseEvents(device);
+ #endif
+ }
+ 
+@@ -546,7 +557,7 @@
+ 	{
+ 		int x1, y1, x2, y2;
+ 		int u1, v1, u2, v2;
+-		
++
+ 		u1 = rects[i].x;
+ 		v1 = rects[i].y;
+ 		u2 = rects[i].x + rects[i].w;
+@@ -562,20 +573,20 @@
+ 
+ 	gsKit_queue_exec(gsGlobal);
+ 	gsKit_sync_flip(gsGlobal);
+-	
++
+ #endif
+ }
+ 
+ static int PS2_FlipHWSurface(SDL_VideoDevice *device, SDL_Surface *surface)
+ {
+ #ifdef SDL_USE_HW_SURFACE
+-	
+-	//printf("flipping HW surface\n");	
++
++	//printf("flipping HW surface\n");
+ 	if (gsGlobal == NULL)
+ 	{
+ 		return (0);
+ 	}
+-	
++
+ 	if (gsTexture.Mem == NULL || gsTexture.Vram == 0)
+ 	{
+ 		return (0);
+@@ -595,16 +606,16 @@
+ 
+ 	/* Initialize all variables that we clean on shutdown */
+ 	device = (SDL_VideoDevice *)malloc(sizeof(SDL_VideoDevice));
+-	if (device != NULL) 
++	if (device != NULL)
+ 	{
+ 		memset(device, 0, (sizeof *device));
+ 		device->hidden = (struct SDL_PrivateVideoData *)malloc((sizeof *device->hidden));
+ 	}
+ 
+-	if ((device == NULL) || (device->hidden == NULL)) 
++	if ((device == NULL) || (device->hidden == NULL))
+ 	{
+ 		SDL_OutOfMemory();
+-		if (device != NULL) 
++		if (device != NULL)
+ 		{
+ 			free(device);
+ 		}
+@@ -622,7 +633,7 @@
+ 	device->UnlockHWSurface = PS2_UnlockHWSurface;
+ 	device->FreeHWSurface = PS2_FreeHWSurface;
+ 	device->InitOSKeymap = PS2_InitOSKeymap;
+-	device->UpdateMouse = PS2_UpdateMouse;	
++	device->UpdateMouse = PS2_UpdateMouse;
+ 	device->PumpEvents = PS2_PumpEvents;
+ 	device->UpdateRects = PS2_UpdateRects;
+ 	device->FlipHWSurface = PS2_FlipHWSurface;
+@@ -633,9 +644,9 @@
+ }
+ 
+ VideoBootStrap PS2SDK_bootstrap = {
+-	"ps2sdk", 
++	"ps2sdk",
+ 	"PlayStation 2",
+-	PS2_Available, 
++	PS2_Available,
+ 	PS2_CreateDevice
+ };
+ 
